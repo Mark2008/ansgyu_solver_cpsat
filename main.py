@@ -69,6 +69,38 @@ class VarGenerator:
             )
             return tmp
 
+EPSILON = 0.000001
+class SolutionSearcher(cp_model.CpSolverSolutionCallback):
+    def __init__(self, variables: list[cp_model.IntVar]):
+        cp_model.CpSolverSolutionCallback.__init__(self)
+        self.variables = variables
+        self.solution_count = 0
+
+    def on_solution_callback(self):
+        result = list(map(
+            lambda v: self.value(v),
+            self.variables[0:40]
+        ))
+
+        _max = max(result)
+        mean = sum(result) / 40
+        so = sorted(result)
+        median = (so[19] + so[20]) / 2
+        s = sum(map(
+            lambda x: x*x, map(
+                lambda y: y - mean, result
+            )
+        )) / 40
+
+        ans = _max * mean * median * s
+        if abs(round(ans) - ans) < EPSILON:
+            self.solution_count += 1
+            print(f'#{self.solution_count}', round(ans))
+            print(result)
+        else:
+            return
+
+
 def solve():
     gen = VarGenerator(40)
     
@@ -101,7 +133,10 @@ def solve():
 
 
     solver = cp_model.CpSolver()
-    status = solver.solve(gen.model)
+    searcher = SolutionSearcher(gen.vars)
+    solver.parameters.enumerate_all_solutions = True
+    status = solver.solve(gen.model, searcher)
+
 
     if status == cp_model.OPTIMAL or status == cp_model.FEASIBLE:
         result = list(map(lambda i: solver.value(gen.vars[i]), range(40)))
