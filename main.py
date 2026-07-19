@@ -32,7 +32,8 @@ class VarGenerator:
         self.model = cp_model.CpModel()
         self.vars = []
         for _ in range(cnt):
-            tmp = self._new_var()
+            self._new_var()
+        self.model.add_all_different(self.vars)
 
     def _new_var(self, _max = 100):
         self.vars.append(self.model.new_int_var(1, _max, f"v[{len(self.vars) + 1}]"))
@@ -69,7 +70,7 @@ class VarGenerator:
             )
             return tmp
 
-EPSILON = 0.000001
+# EPSILON = 0.000001
 class SolutionSearcher(cp_model.CpSolverSolutionCallback):
     def __init__(self, variables: list[cp_model.IntVar]):
         cp_model.CpSolverSolutionCallback.__init__(self)
@@ -93,12 +94,15 @@ class SolutionSearcher(cp_model.CpSolverSolutionCallback):
         )) / 40
 
         ans = _max * mean * median * s
-        if abs(round(ans) - ans) < EPSILON:
-            self.solution_count += 1
-            print(f'#{self.solution_count}', round(ans))
-            print(result)
-        else:
-            return
+        # if abs(round(ans) - ans) < EPSILON:
+        #     self.solution_count += 1
+        #     print(f'#{self.solution_count}', round(ans))
+        #     print(result)
+        # else:
+        #     return
+        self.solution_count += 1
+        print(f'#{self.solution_count}', ans)
+        print(result)
 
 
 def solve():
