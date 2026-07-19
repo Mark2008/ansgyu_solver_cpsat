@@ -120,7 +120,7 @@ def solve():
     gen.add(v(18), v(19)+c(27))
     gen.add(v(20), v(21)+v(22))
     gen.add(v(23), v(24)+v(25))
-    gen.add(v(26)*v(27)+c(4)*v(28), c(4)*v(28)*v(30))
+    gen.add(v(26)*v(27)+c(4)*v(28)*v(29), c(4)*v(28)*v(30))
     gen.add(v(31)+v(32), c(23)+v(33))
     gen.add(v(35)+v(36)+v(38), v(37)+v(39)+v(40))
     # vertical
@@ -135,6 +135,32 @@ def solve():
     gen.add(v(24)+v(29)+v(34), v(39))
     gen.add(v(10)+v(14)+c(27), v(25))
 
+
+    # moongyu's hint
+    gen.model.add(gen.vars[1-1] == 1)
+    gen.model.add(gen.vars[2-1] == 9)
+    gen.model.add(gen.vars[3-1] == 12)
+    gen.model.add(gen.vars[4-1] == 57)
+
+    gen.model.add(gen.vars[20-1] == 78)
+    gen.model.add(gen.vars[21-1] == 10)
+    gen.model.add(gen.vars[22-1] == 68)
+    
+    gen.model.add(gen.vars[28-1] == 40)
+    gen.model.add(gen.vars[29-1] == 21)
+    gen.model.add(gen.vars[30-1] == 30)
+
+    gen.model.add(gen.vars[31-1] == 36)
+    gen.model.add(gen.vars[32-1] == 20)
+    gen.model.add(gen.vars[33-1] == 33)
+    gen.model.add(gen.vars[34-1] == 22)
+
+    gen.model.add(gen.vars[35-1] == 38)
+    gen.model.add(gen.vars[36-1] == 41)
+    gen.model.add(gen.vars[37-1] == 37)
+    gen.model.add(gen.vars[38-1] == 39)
+    gen.model.add(gen.vars[39-1] == 58)
+    gen.model.add(gen.vars[40-1] == 23)
 
     solver = cp_model.CpSolver()
     searcher = SolutionSearcher(gen.vars)
@@ -162,7 +188,7 @@ def solve():
 
         print('ans:', _max * mean * median * s)
 
-        
+
         print(result)
         for i in range(len(gen.vars)):
             print(f"var[{i+1}] = {solver.value(gen.vars[i])}")
